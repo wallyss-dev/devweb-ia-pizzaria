@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forno & Massa - Pizzaria Artesanal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="topo">
+        <h1 id="logo">🍕 Forno & Massa</h1>
+        <nav>
+            <a href="#inicio">Início</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#cardapio">Cardápio</a>
+            <a href="#laboratorio">Laboratório</a>
+            <a href="#comparador">Comparador</a>
+            <a href="#reserva">Reserva</a>
+            <a href="#assistente">Assistente</a>
+            <a href="#contato">Contato</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- INÍCIO -->
+        <section id="inicio" class="hero">
+            <h2>Pizza de verdade</h2>
+            <p>Massa de longa fermentação, forno a lenha e ingredientes frescos direto para a sua mesa.</p>
+            <a href="#cardapio" class="btn">Ver cardápio</a>
+            <button id="btnBoasVindas" class="btn">Receber boas-vindas</button>
+        </section>
+
+        <!-- SOBRE -->
+        <section id="sobre" class="secao">
+            <h2>Sobre nós</h2>
+            <div class="grade">
+                <div class="info">
+                    <h3>Nossa história</h3>
+                    <p>Nascemos em 2020 do sonho de servir pizza artesanal com carinho.</p>
+                </div>
+                <div class="info">
+                    <h3>Nossos ingredientes</h3>
+                    <p>Vêm direto de pequenos produtores e a massa é preparada todos os dias.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARDÁPIO -->
+        <section id="cardapio" class="secao">
+            <h2>Nosso cardápio</h2>
+            <p class="dica">Clique em um card, passe o mouse sobre ele e dê duplo clique na logo!</p>
+            <div class="grade">
+                <div class="card">
+                    <h3>Margherita</h3>
+                    <p>Molho de tomate, mussarela de búfala e manjericão.</p>
+                    <span>R$ 42,00</span>
+                </div>
+                <div class="card">
+                    <h3>Calabresa</h3>
+                    <p>Calabresa artesanal, cebola roxa e azeitonas.</p>
+                    <span>R$ 46,00</span>
+                </div>
+                <div class="card">
+                    <h3>Quatro Queijos</h3>
+                    <p>Mussarela, gorgonzola, parmesão e provolone.</p>
+                    <span>R$ 52,00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- LABORATÓRIO (manipulação do DOM) -->
+        <section id="laboratorio" class="secao">
+            <h2>Laboratório JavaScript</h2>
+            <p class="dica">Cada botão altera a página usando o DOM. Abra o console (F12) para ver os logs.</p>
+            <div class="botoes">
+                <button id="btnCor" class="btn">Cor do título principal</button>
+                <button id="btnBorda" class="btn">Borda no 1º card</button>
+                <button id="btnFundo" class="btn">Fundo da página</button>
+                <button id="btnTexto" class="btn">Alterar 1º título h3</button>
+                <button id="btnReset" class="btn">Resetar</button>
+            </div>
+        </section>
+
+        <!-- COMPARADOR (operadores == e ===) -->
+        <section id="comparador" class="secao">
+            <h2>Comparador de valores</h2>
+            <p class="dica">Digite um valor e veja se ele é igual ao valor guardado no código.</p>
+            <form class="form">
+                <input type="text" id="valorComparar" placeholder="Digite um valor...">
+                <button type="button" id="btnComparar" class="btn">Comparar</button>
+                <div id="resultadoIgual">Resultado do == aparecerá aqui...</div>
+                <div id="resultadoTipo">Resultado do === aparecerá aqui...</div>
+            </form>
+        </section>
+
+        <!-- RESERVA (input + strings + exibição) -->
+        <section id="reserva" class="secao">
+            <h2>Reserve sua mesa</h2>
+            <form class="form">
+                <input type="text" id="entrada" placeholder="Digite seu nome...">
+                <button type="button" id="botao" class="btn">Enviar</button>
+                <div id="resultado">Resposta aparecerá aqui...</div>
+            </form>
+        </section>
+
+        <!-- ASSISTENTE (CHATBOT) -->
+        <section id="assistente" class="secao">
+            <h2>Assistente virtual</h2>
+            <p class="dica">Digite "ajuda" para ver o que o assistente sabe responder.</p>
+            <form class="form">
+                <input type="text" id="input" placeholder="Digite sua mensagem...">
+                <button type="button" id="enviar" class="btn">Enviar</button>
+                <div id="msg-usuario">Sua mensagem aparecerá aqui...</div>
+                <div id="chat-box">Olá! 👋 Sou o assistente da Forno & Massa..</div>
+            </form>
+        </section>
+
+        <!-- CONTATO -->
+        <section id="contato" class="secao">
+            <h2>Contato</h2>
+            <p>Rua da esquina, 123 · Aberto todos os dias, das 18h às 23h</p>
+            <a id="whats" href="https://wa.me/5511999999999" class="btn">Falar no WhatsApp</a>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <p>© 2026 Forno & Massa · Última tecla: <strong id="tecla">-</strong></p>
+    </footer>
+
+</body>
+</html>
