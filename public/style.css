@@ -194,7 +194,7 @@ nav a:hover { color: #fff; background: rgba(255,255,255,.1); border-left-color: 
 .form select:focus { outline: none; border-color: var(--vermelho); }
 .form .btn { margin: 0 0 14px; }
 
-#resultado, #resultadoIgual, #resultadoTipo, #msg-usuario, #chat-box {
+#resultado, #msg-usuario, #chat-box {
     padding: 12px 16px;
     margin-bottom: 10px;
     background: #fff;
