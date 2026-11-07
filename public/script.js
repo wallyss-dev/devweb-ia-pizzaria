@@ -126,7 +126,6 @@ let enviar = document.querySelector("#enviar");
 let msgUsuario = document.querySelector("#msg-usuario");
 let chatBox = document.querySelector("#chat-box");
 
-// Eventos de envio
 enviar.addEventListener("click", enviarParaIA);
 
 inputChat.addEventListener("keydown", function (e) {
@@ -136,6 +135,9 @@ inputChat.addEventListener("keydown", function (e) {
     }
 });
 
+// Cria um ID único para o usuário, assim a IA lembra do contexto da conversa
+const meuSessionId = Date.now().toString();
+
 async function enviarParaIA() {
     let texto = inputChat.value.trim();
 
@@ -144,30 +146,28 @@ async function enviarParaIA() {
         return;
     }
 
-    // 1. Atualiza a tela com a mensagem do usuário
+    // Atualiza a tela com o que o usuário digitou
     msgUsuario.innerText = "Você: " + texto;
-    
-    // Mostra que a IA está "pensando"
-    chatBox.innerText = "Luigi está digitando...";
-    inputChat.value = ""; // Limpa o campo
+    chatBox.innerText = "Atendente digitando...";
+    inputChat.value = ""; 
 
     try {
-        // 2. Faz a chamada (fetch) para o seu servidor local (server.js)
-        const resposta = await fetch('http://localhost:3000/chat', {
+        // Faz a chamada para o server.js
+        const resposta = await fetch('http://localhost:3000/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ mensagem: texto }) // Envia o texto digitado
+            body: JSON.stringify({ mensagem: texto, sessionId: meuSessionId }) 
         });
 
         const dados = await resposta.json();
-
-        // 3. Atualiza a tela com a resposta vinda do Gemini
+        
+        // Coloca a resposta da IA na tela
         chatBox.innerText = dados.resposta;
 
     } catch (erro) {
         console.error("Erro ao conectar com a IA:", erro);
-        chatBox.innerText = "Desculpe, ocorreu um erro ao conectar com o servidor. Verifique se o server.js está rodando!";
+        chatBox.innerText = "Desculpe, ocorreu um erro de conexão com o servidor.";
     }
 }

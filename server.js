@@ -3,8 +3,7 @@
 // ---------------------------------------------------------------------
 import express from "express";                    // cria o servidor web
 import dotenv from "dotenv";                      // lê a chave do arquivo .env
-import fs from "fs";                              // salva arquivos (pedidos.json)
-import { GoogleGenAI, Type } from "@google/genai"; // conversa com o Gemini
+import { GoogleGenAI } from "@google/genai";      // conversa com o Gemini
 import { PERSONA, CONHECIMENTO, REGRAS } from "./persona.js"; // sua persona ✏️
 
 // Carrega o arquivo .env (a partir daqui existe process.env.GEMINI_API_KEY).
@@ -67,57 +66,7 @@ function pegarHistorico(sessionId) {
 }
 
 // ---------------------------------------------------------------------
-// 4) FERRAMENTA: registrar_pedido  (o que deixa o chat "funcional")
-// ---------------------------------------------------------------------
-// A IA não consegue salvar nada sozinha. Ela PEDE para usar esta
-// ferramenta, e o NOSSO código é quem salva o pedido no arquivo pedidos.json.
-const FERRAMENTAS = [
-  {
-    name: "registrar_pedido",
-    description:
-      "Registra um pedido de agendamento, orçamento ou compra quando o cliente já informou nome, telefone e o que deseja.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        nome: { type: Type.STRING, description: "Nome do cliente." },
-        telefone: { type: Type.STRING, description: "Telefone ou WhatsApp do cliente." },
-        pedido: { type: Type.STRING, description: "O que o cliente quer (serviço, produto, data/horário preferido)." },
-      },
-      required: ["nome", "telefone", "pedido"],
-    },
-  },
-];
-
-const ARQUIVO_PEDIDOS = "pedidos.json";
-
-// Executa DE VERDADE a ferramenta que a IA pediu.
-function executarFerramenta(chamada) {
-  if (chamada.name === "registrar_pedido") {
-    // Lê os pedidos que já existem (ou começa uma lista vazia).
-    let pedidos = [];
-    try {
-      pedidos = JSON.parse(fs.readFileSync(ARQUIVO_PEDIDOS, "utf-8"));
-    } catch (e) {
-      pedidos = [];
-    }
-
-    // Monta o novo pedido com data e hora.
-    const novo = { ...chamada.args, data: new Date().toLocaleString("pt-BR") };
-    pedidos.push(novo);
-
-    // Salva o arquivo e mostra no terminal (é aqui que a "loja" vê os pedidos).
-    fs.writeFileSync(ARQUIVO_PEDIDOS, JSON.stringify(pedidos, null, 2));
-    console.log("📥 NOVO PEDIDO:", novo);
-
-    return { sucesso: true, numero_do_pedido: pedidos.length };
-  }
-
-  // Se a IA pedir uma ferramenta que não existe, nada é executado.
-  return { sucesso: false, aviso: `Ferramenta inexistente: ${chamada.name}` };
-}
-
-// ---------------------------------------------------------------------
-// 5) ROTA DO CHAT: POST /api/chat  (o script.js chama este endereço)
+// 4) ROTA DO CHAT: POST /api/chat  (o script.js chama este endereço)
 // ---------------------------------------------------------------------
 app.post("/api/chat", async (req, res) => {
   const { mensagem, sessionId } = req.body;
@@ -137,38 +86,20 @@ app.post("/api/chat", async (req, res) => {
   try {
     let textoFinal = "";
 
-    // Até 3 voltas: pergunta → (talvez ferramenta) → resposta final.
-    for (let volta = 1; volta <= 3; volta++) {
-      const resposta = await ai.models.generateContent({
-        model: MODELO,
-        contents: historico, // a conversa inteira (contexto)
-        config: {
-          systemInstruction: INSTRUCAO_DE_SISTEMA, // a persona
-          tools: [{ functionDeclarations: FERRAMENTAS }], // o que ela pode pedir
-        },
-      });
+    // Apenas 1 chamada direta para a IA gerar o conteúdo (sem ferramentas)
+    const resposta = await ai.models.generateContent({
+      model: MODELO,
+      contents: historico, // a conversa inteira (contexto)
+      config: {
+        systemInstruction: INSTRUCAO_DE_SISTEMA, // a persona
+      },
+    });
 
-      // Guarda a resposta da IA no histórico.
-      const conteudo = resposta.candidates?.[0]?.content;
-      if (conteudo) historico.push(conteudo);
+    // Guarda a resposta da IA no histórico.
+    const conteudo = resposta.candidates?.[0]?.content;
+    if (conteudo) historico.push(conteudo);
 
-      // A IA pediu para usar uma ferramenta?
-      const chamadas = resposta.functionCalls;
-      if (!chamadas || chamadas.length === 0) {
-        textoFinal = resposta.text ?? ""; // não pediu: esta é a resposta final
-        break;
-      }
-
-      // Pediu: executamos e devolvemos o resultado para ela continuar.
-      const resultados = chamadas.map((chamada) => ({
-        functionResponse: {
-          id: chamada.id,
-          name: chamada.name,
-          response: executarFerramenta(chamada),
-        },
-      }));
-      historico.push({ role: "user", parts: resultados });
-    }
+    textoFinal = resposta.text ?? ""; 
 
     return res.json({
       resposta: textoFinal || "Desculpe, não consegui responder agora. Pode repetir?",
@@ -181,7 +112,7 @@ app.post("/api/chat", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------
-// 6) LIGAR O SERVIDOR
+// 5) LIGAR O SERVIDOR
 // ---------------------------------------------------------------------
 app.listen(PORTA, () => {
   console.log(`✅ ${PERSONA.empresa} no ar: http://localhost:${PORTA}`);

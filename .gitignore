@@ -1,1 +1,3 @@
-GEMINI_API_KEY=Vamos colar a chave aqui
+node_modules/
+.env
+pedidos.json
