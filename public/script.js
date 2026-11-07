@@ -42,14 +42,6 @@ let cards = document.querySelectorAll(".card");
 console.log("Lista de cards (NodeList):", cards);
 console.log("Segundo card:", cards[1]);
 
-// 4. FUNÇÕES E EVENTOS
-function mostrarMensagem() {
-    alert(mensagem);
-}
-
-let btnBoasVindas = document.querySelector("#btnBoasVindas");
-btnBoasVindas.addEventListener("click", mostrarMensagem);
-
 function abrirWhats(e) {
     e.preventDefault();
     alert("Você será redirecionado para o WhatsApp!");
@@ -90,26 +82,24 @@ botao.addEventListener("click", executar);
 
 input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
+        e.preventDefault();
         executar();
     }
 });
 
 function executar() {
     let texto = input.value;
-    console.log("Texto original:", texto);
-
     texto = texto.trim();
-    console.log("Sem espaços:", texto);
 
     if (texto === "") {
-        resultado.innerText = "Digite alguma coisa antes de enviar!";
+        resultado.innerText = "Por favor, digite seu nome para reservar a mesa!";
         return;
     }
 
-    texto = texto.toLowerCase();
-    console.log("Minúsculo:", texto);
+    texto = texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
 
-    resultado.innerText = "Reserva anotada em nome de: " + texto;
+    resultado.innerText = "🍕 Tudo certo, " + texto + "! Sua mesa está reservada e o forno já está aquecendo. Te esperamos!";
+    
     input.value = "";
 }
 
