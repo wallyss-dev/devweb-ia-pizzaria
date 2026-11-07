@@ -63,18 +63,12 @@ nav a:hover { color: #fff; background: rgba(255,255,255,.1); border-left-color: 
     overflow: hidden;
     background-color: var(--vinho);
     background-image:
-        radial-gradient(circle at 85% 30%, rgba(255,190,90,.35) 0, transparent 40%),
-        linear-gradient(135deg, #5a120c, #9c2314);
+        linear-gradient(rgba(122, 26, 18, 0.45), rgba(43, 26, 20, 0.75)), 
+        url('Pizza.webp');
+    background-size: cover;
+    background-position: center;
 }
-.hero::after {
-    content: "🍕";
-    position: absolute;
-    right: 4vw; bottom: -4vw;
-    font-size: 26vw;
-    opacity: .18;
-    transform: rotate(-12deg);
-    pointer-events: none;
-}
+
 .hero h2 { font-size: clamp(2.2rem, 5vw, 4rem); max-width: 14ch; line-height: 1.1; margin-bottom: 18px; }
 .hero p { font-size: 1.2rem; max-width: 42ch; margin-bottom: 28px; opacity: .92; }
 
