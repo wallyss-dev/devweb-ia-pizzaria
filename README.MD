@@ -15,7 +15,7 @@ Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que busca
 
 ## 👥 Integrantes do Grupo
 
-* **Integrante 1:** Wallysson Uriel Silva Torres
+* **Integrante 1:** WallyssDev
 * **Integrante 2:** [Inserir Nome Completo]
 * **Integrante 3:** [Inserir Nome Completo]
 
