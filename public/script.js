@@ -45,7 +45,7 @@ console.log("Segundo card:", cards[1]);
 function abrirWhats(e) {
     e.preventDefault();
     alert("Você será redirecionado para o WhatsApp!");
-    window.open("https://wa.me/5511999999999", "_blank");
+    window.open("https://wa.me/5586999999999", "_blank");
 }
 
 let whats = document.querySelector("#whats");
@@ -87,14 +87,7 @@ function executar() {
     input.value = "";
 }
 
-// 5. KEYDOWN NO DOCUMENTO INTEIRO
-let campoTecla = document.querySelector("#tecla");
-document.addEventListener("keydown", function (e) {
-    console.log("Tecla pressionada:", e.key);
-    campoTecla.innerText = e.key;
-});
-
-// 6. INTEGRAÇÃO COM INTELIGÊNCIA ARTIFICIAL (GEMINI)
+// 5. INTEGRAÇÃO COM INTELIGÊNCIA ARTIFICIAL (GEMINI)
 let inputChat = document.querySelector("#input");
 let enviar = document.querySelector("#enviar");
 let msgUsuario = document.querySelector("#msg-usuario");
