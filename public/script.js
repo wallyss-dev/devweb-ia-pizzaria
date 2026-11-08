@@ -57,23 +57,7 @@ logo.addEventListener("dblclick", function () {
     console.log("Duplo clique detectado na logo!");
 });
 
-// 5. LISTAS COM forEach + click, mouseenter, mouseleave
-cards.forEach(function (card) {
-    card.addEventListener("click", function () {
-        let nomeItem = card.querySelector("h3").innerText;
-        alert("Você clicou em: " + nomeItem);
-    });
-
-    card.addEventListener("mouseenter", function () {
-        card.style.background = "#ffe0cf";
-    });
-
-    card.addEventListener("mouseleave", function () {
-        card.style.background = "#ffffff";
-    });
-});
-
-// 8. INPUT + STRINGS + EXIBIÇÃO NA TELA (seção Reserva)
+// 4. INPUT + STRINGS + EXIBIÇÃO NA TELA (seção Reserva)
 let input = document.querySelector("#entrada");
 let botao = document.querySelector("#botao");
 let resultado = document.querySelector("#resultado");
@@ -103,14 +87,14 @@ function executar() {
     input.value = "";
 }
 
-// 9. KEYDOWN NO DOCUMENTO INTEIRO
+// 5. KEYDOWN NO DOCUMENTO INTEIRO
 let campoTecla = document.querySelector("#tecla");
 document.addEventListener("keydown", function (e) {
     console.log("Tecla pressionada:", e.key);
     campoTecla.innerText = e.key;
 });
 
-// 10. INTEGRAÇÃO COM INTELIGÊNCIA ARTIFICIAL (GEMINI)
+// 6. INTEGRAÇÃO COM INTELIGÊNCIA ARTIFICIAL (GEMINI)
 let inputChat = document.querySelector("#input");
 let enviar = document.querySelector("#enviar");
 let msgUsuario = document.querySelector("#msg-usuario");
