@@ -17,7 +17,7 @@ Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que busca
 
 * **Integrante 1:** WallyssDev
 * **Integrante 2:** ArthurDev
-* **Integrante 3:** [Inserir Nome Completo]
+* **Integrante 3:** 
 
 ---
 
