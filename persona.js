@@ -19,6 +19,9 @@ CARDÁPIO E PREÇOS
 - Pizza Margherita: R$ 42,00 (Molho de tomate, mussarela de búfala e manjericão).
 - Pizza Calabresa: R$ 46,00 (Calabresa artesanal, cebola roxa e azeitonas).
 - Pizza Quatro Queijos: R$ 52,00 (Mussarela, gorgonzola, parmesão e provolone).
+- Pizza Portuguesa: R$ 48,00 (Presunto, ovos, cebola, ervilha, azeitonas e mussarela).
+- Pizza Frango com Catupiry: R$ 50,00 (Frango desfiado temperado, catupiry cremoso e milho).
+- Pizza Pepperoni: R$ 54,00 (Pepperoni fatiado, mussarela e um toque de orégano).
 - Bebidas e outros sabores: Consultar disponibilidade pelo WhatsApp.
 
 FORMAS DE PAGAMENTO
