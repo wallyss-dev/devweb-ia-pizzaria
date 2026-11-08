@@ -1,27 +1,27 @@
-# 🍕 Forno & Massa — Pizzaria Artesanal
+# Forno & Massa — Pizzaria Artesanal
 
 
-## 📖 Descrição Geral do Projeto
+## Descrição Geral do Projeto
 
 O **Forno & Massa** é uma plataforma web completa voltada para a apresentação e comercialização de pizzas artesanais de longa fermentação. O sistema foi projetado para oferecer uma experiência visual agradável e intuitiva, permitindo que os clientes conheçam a história da pizzaria, consultem o cardápio detalhado com preços, realizem reservas de mesa e tirem dúvidas em tempo real por meio de uma assistente virtual inteligente integrada à API do **Google Gemini**.
 
 ---
 
-## 🎯 Público-Alvo
+## Público-Alvo
 
 Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que buscam praticidade para consultar opções do cardápio, verificar horários de atendimento, reservar mesas para consumo presencial ou iniciar pedidos via delivery.
 
 ---
 
-## 👥 Integrantes do Grupo
+## Integrantes do Grupo
 
 * **Integrante 1:** WallyssDev
 * **Integrante 2:** ArthurDev
-* **Integrante 3:** 
+* **Integrante 3:** GabrielDev
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### Front-end
 * **HTML5:** Estruturação semântica das seções, cabeçalho, navegação, formulários e rodapé.
@@ -35,7 +35,7 @@ Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que busca
 
 ---
 
-## ✨ Principais Funcionalidades
+## Principais Funcionalidades
 
 * **Recepção Personalizada:** Captura o nome do visitante ao acessar a página e atualiza dinamicamente a saudação no banner principal (*Hero*).
 * **Navegação Funcional e Responsiva:** Menu lateral fixo em telas grandes (*Desktop*) que se adapta automaticamente para o topo em dispositivos móveis (*Mobile*), contendo links para todas as seções (*Início, Sobre, Cardápio, Reserva, Assistente e Contato*).
@@ -46,7 +46,7 @@ Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que busca
 
 ---
 
-## 🤖 Integração com Inteligência Artificial e Persona
+## Integração com Inteligência Artificial e Persona
 
 O projeto conta com uma integração real de IA generativa por meio do SDK `@google/genai`, utilizando arquitetura cliente-servidor para proteger a chave de API no back-end (`server.js`).
 
@@ -64,7 +64,7 @@ As diretrizes da assistente estão centralizadas no arquivo `persona.js` (dividi
 
 ---
 
-## 📂 Estrutura de Pastas e Arquivos
+## Estrutura de Pastas e Arquivos
 
 ```text
 devweb-ia-pizzaria/
@@ -83,7 +83,7 @@ devweb-ia-pizzaria/
 
 ---
 
-## 🚀 Instruções de Instalação e Execução (Passo a Passo)
+## Instruções de Instalação e Execução (Passo a Passo)
 
 Qualquer pessoa pode baixar e testar este projeto localmente seguindo as etapas abaixo:
 
@@ -126,17 +126,17 @@ npm start
 
 O terminal mostrará a confirmação de que o servidor está ativo:
 ```text
-✅ Forno & Massa no ar: http://localhost:3000
-🤖 Atendente virtual: Luiza
+ Forno & Massa no ar: http://localhost:3000
+ Atendente virtual: Luiza
 ```
 
 ### 6. Acessar e testar a aplicação
 Abra o seu navegador e acesse:
-👉 **http://localhost:3000**
+ **http://localhost:3000**
 
 ---
 
-## 🛠️ Solução de Problemas Comuns (FAQ)
+## Solução de Problemas Comuns (FAQ)
 
 * **O chat não responde quando abro o `index.html` direto da pasta ou pelo Live Server:**
   Isso é esperado. A Inteligência Artificial roda no servidor Node.js (`server.js`). Para o chat funcionar, você deve sempre ligar o servidor no terminal (`npm start`) e acessar pelo endereço `http://localhost:3000`.
@@ -149,5 +149,5 @@ Abra o seu navegador e acesse:
 
 ---
 
-## 📄 Licença e Uso
+## Licença e Uso
 Projeto desenvolvido exclusivamente para fins didáticos
