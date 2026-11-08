@@ -16,7 +16,7 @@ Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que busca
 ## Integrantes do Grupo
 
 * **Integrante 1:** WallyssDev
-* **Integrante 2:** ArthurDev
+* **Integrante 2:** Arthur dos Santos Alcantara
 * **Integrante 3:** GabrielDev
 
 ---
