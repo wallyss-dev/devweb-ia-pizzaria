@@ -13,7 +13,6 @@ CREATE TABLE produto (
     disponibilidade BOOLEAN DEFAULT TRUE NOT NULL
 );
 
--- Tabela 3: pedido (Fazendo a vez também da reserva/solicitação)
 CREATE TABLE pedido (
     id SERIAL PRIMARY KEY,
     cliente_id INT NOT NULL,
@@ -22,7 +21,7 @@ CREATE TABLE pedido (
     CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id) REFERENCES cliente (id)
 );
 
--- Tabela 4: item_pedido (Tabela associativa permitida pelo professor para relação N:N)
+
 CREATE TABLE item_pedido (
     id SERIAL PRIMARY KEY,
     pedido_id INT NOT NULL,
