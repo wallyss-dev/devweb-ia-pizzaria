@@ -1,43 +1,110 @@
-// ---------------------------------------------------------------------
-// 0) IMPORTAÇÕES
-// ---------------------------------------------------------------------
-import express from "express";                    // cria o servidor web
-import dotenv from "dotenv";                      // lê a chave do arquivo .env
-import { GoogleGenAI } from "@google/genai";      // conversa com o Gemini
-import { PERSONA, CONHECIMENTO, REGRAS } from "./persona.js"; // sua persona ✏️
 
-// Carrega o arquivo .env (a partir daqui existe process.env.GEMINI_API_KEY).
+// 0) IMPORTAÇÕES
+
+import express from "express";
+import dotenv from "dotenv";
+import { GoogleGenAI } from "@google/genai";
+import { PERSONA, CONHECIMENTO, REGRAS } from "./persona.js";
+import pg from "pg";
+
 dotenv.config({ quiet: true });
 
-// ---------------------------------------------------------------------
-// 1) CONFIGURAÇÕES
-// ---------------------------------------------------------------------
-const PORTA = 3000; // o site abrirá em http://localhost:3000
 
-// Modelo do Gemini. Se um dia der "model not found", troque só esta linha
-// por um nome da lista: https://ai.google.dev/gemini-api/docs/models
-const MODELO = "gemini-3.7-flash";
+// 1) CONFIGURAÇÕES GERAIS E BANCO DE DADOS
 
-// Aviso no terminal se a chave não foi configurada.
+const PORTA = 3000;
+const MODELO = "gemini-2.5-flash";
+
 if (!process.env.GEMINI_API_KEY) {
-  console.warn(
-    "\n⚠️  GEMINI_API_KEY não encontrada!\n" +
-      "   Crie o arquivo .env (fora da pasta public) com a linha:\n" +
-      "   GEMINI_API_KEY=sua_chave_aqui\n"
-  );
+  console.warn("⚠️ GEMINI_API_KEY não encontrada no .env!");
 }
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const app = express();
 
-app.use(express.json());           // entende JSON enviado pelo navegador
-app.use(express.static("public")); // entrega o seu site (pasta public)
+// IMPORTANTE: O express.json() tem que vir ANTES das rotas!
+app.use(express.json());           
+app.use(express.static("public")); 
 
-// ---------------------------------------------------------------------
-// 2) MONTANDO A INSTRUÇÃO DE SISTEMA A PARTIR DO persona.js
-// ---------------------------------------------------------------------
-// É o "treinamento" que o atendente recebe. Vai junto em TODA pergunta,
-// mas o cliente nunca vê este texto.
+const { Pool } = pg;
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
+
+// 2) ROTAS DO BANCO DE DADOS
+
+
+// Ler produtos
+app.get("/api/produtos", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM produto WHERE disponibilidade = true ORDER BY id");
+        res.json(result.rows);
+    } catch (erro) {
+        console.error(erro);
+        res.status(500).json({ erro: "Erro ao buscar produtos no banco" });
+    }
+});
+
+// Salvar reserva/cliente
+app.post("/api/reservas", async (req, res) => {
+    const { nome, email, telefone } = req.body;
+    
+    if (!nome || !email || !telefone) {
+        return res.status(400).json({ erro: "Nome, e-mail e telefone são obrigatórios." });
+    }
+
+    try {
+        let clienteId;
+
+        // Verifica se o cliente já existe pelo email (para respeitar a regra UNIQUE da tabela)
+        const clienteExistente = await pool.query("SELECT id FROM cliente WHERE email = $1", [email]);
+        
+        if (clienteExistente.rows.length > 0) {
+            clienteId = clienteExistente.rows[0].id;
+        } else {
+            // Insere novo cliente
+            const resultCliente = await pool.query(
+                "INSERT INTO cliente (nome, email, telefone) VALUES ($1, $2, $3) RETURNING id",
+                [nome, email, telefone]
+            );
+            clienteId = resultCliente.rows[0].id;
+        }
+
+        // Insere o pedido
+        const resultPedido = await pool.query(
+            "INSERT INTO pedido (cliente_id, status) VALUES ($1, 'Pendente') RETURNING id",
+            [clienteId]
+        );
+
+        res.json({ 
+            mensagem: `🍕 Tudo certo, ${nome}! Sua mesa está reservada.`, 
+            id_pedido: resultPedido.rows[0].id 
+        });
+    } catch (erro) {
+        console.error("Erro ao salvar no banco:", erro);
+        res.status(500).json({ erro: "Erro ao gravar dados no banco." });
+    }
+});
+
+// Rota para cancelar/excluir (Exclusão controlada exigida)
+app.delete("/api/reservas/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Exclui primeiro os itens (se existirem), depois o pedido, respeitando chaves estrangeiras
+        await pool.query("DELETE FROM item_pedido WHERE pedido_id = $1", [id]);
+        await pool.query("DELETE FROM pedido WHERE id = $1", [id]);
+        res.json({ mensagem: "Reserva cancelada com sucesso" });
+    } catch (erro) {
+        console.error("Erro ao excluir reserva:", erro);
+        res.status(500).json({ erro: "Erro ao excluir reserva no banco." });
+    }
+});
+
+
+// 3) ROTA E LÓGICA DA INTELIGÊNCIA ARTIFICIAL
+
 const INSTRUCAO_DE_SISTEMA = `
 Você é ${PERSONA.nome}, atendente virtual da ${PERSONA.empresa} (${PERSONA.ramo}).
 Seu objetivo: ${PERSONA.objetivo}.
@@ -52,12 +119,6 @@ ${REGRAS.map((regra, i) => `${i + 1}. ${regra}`).join("\n")}
 Escreva em texto simples, sem markdown (não use **, # ou tabelas).
 `;
 
-// ---------------------------------------------------------------------
-// 3) HISTÓRICO DAS CONVERSAS (memória de curto prazo)
-// ---------------------------------------------------------------------
-// Cada visitante tem um código (sessionId). Guardamos a conversa dele
-// para que a IA entenda perguntas como "e quanto custa ISSO?".
-// ⚠️ Fica na memória RAM: se o servidor desligar, as conversas somem.
 const historicos = new Map();
 
 function pegarHistorico(sessionId) {
@@ -65,55 +126,38 @@ function pegarHistorico(sessionId) {
   return historicos.get(sessionId);
 }
 
-// ---------------------------------------------------------------------
-// 4) ROTA DO CHAT: POST /api/chat  (o script.js chama este endereço)
-// ---------------------------------------------------------------------
 app.post("/api/chat", async (req, res) => {
   const { mensagem, sessionId } = req.body;
 
-  // Validações antes de gastar uma chamada à API.
   if (!mensagem?.trim()) {
     return res.status(400).json({ erro: "Mensagem vazia." });
   }
-  if (!process.env.GEMINI_API_KEY) {
-    return res.status(500).json({ erro: "A chave do Gemini não está configurada no .env." });
-  }
 
   const historico = pegarHistorico(sessionId || "anonimo");
-  const tamanhoAntes = historico.length; // para desfazer se der erro
+  const tamanhoAntes = historico.length; 
   historico.push({ role: "user", parts: [{ text: mensagem }] });
 
   try {
-    let textoFinal = "";
-
-    // Apenas 1 chamada direta para a IA gerar o conteúdo (sem ferramentas)
     const resposta = await ai.models.generateContent({
       model: MODELO,
-      contents: historico, // a conversa inteira (contexto)
-      config: {
-        systemInstruction: INSTRUCAO_DE_SISTEMA, // a persona
-      },
+      contents: historico,
+      config: { systemInstruction: INSTRUCAO_DE_SISTEMA },
     });
 
-    // Guarda a resposta da IA no histórico.
     const conteudo = resposta.candidates?.[0]?.content;
     if (conteudo) historico.push(conteudo);
 
-    textoFinal = resposta.text ?? ""; 
-
-    return res.json({
-      resposta: textoFinal || "Desculpe, não consegui responder agora. Pode repetir?",
-    });
+    return res.json({ resposta: resposta.text ?? "" });
   } catch (erro) {
-    console.error("❌ Erro ao falar com o Gemini:", erro); // o erro completo aparece no terminal
-    historico.length = tamanhoAntes; // desfaz para não quebrar o histórico
-    return res.status(500).json({ erro: erro?.message || "Falha ao falar com o Gemini." });
+    console.error("❌ Erro ao falar com o Gemini:", erro); 
+    historico.length = tamanhoAntes; 
+    return res.status(500).json({ erro: "Falha ao falar com o Gemini." });
   }
 });
 
-// ---------------------------------------------------------------------
-// 5) LIGAR O SERVIDOR
-// ---------------------------------------------------------------------
+
+// 4) LIGAR O SERVIDOR
+
 app.listen(PORTA, () => {
   console.log(`✅ ${PERSONA.empresa} no ar: http://localhost:${PORTA}`);
   console.log(`🤖 Atendente virtual: ${PERSONA.nome}`);

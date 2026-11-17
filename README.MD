@@ -115,3 +115,5 @@ GEMINI_API_KEY=COLE_SUA_CHAVE_AQUI
 npm start
 ```
 Abra o navegador e acesse: **http://localhost:3000**
+
+
