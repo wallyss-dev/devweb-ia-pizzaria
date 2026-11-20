@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forno & Massa - Pizzaria Artesanal</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logo.svg">
     <script src="script.js" defer></script>
 </head>
 <body>
 
     <header class="topo">
-        <h1 id="logo">Forno & Massa</h1>
+        <h1 id="logo"><img src="logo.svg" alt="Logo Forno & Massa" width="60" height="60"> Forno & Massa</h1>
         <nav>
             <a href="#inicio">Início</a>
             <a href="#sobre">Sobre</a>
@@ -48,57 +49,58 @@
         <section id="cardapio" class="secao">
             <h2>Nosso cardápio</h2>
             <div class="grade" id="grade-produtos">
-                <!-- As pizzas serão injetadas aqui pelo Banco de Dados -->
                 <p>Carregando cardápio do forno...</p>
             </div>
         </section>
 
-        <!-- RESERVA (input + strings + exibição + consulta) -->
+        <!-- RESERVA (Cadastro + Consulta + Atualização + Exclusão Controlada) -->
         <section id="reserva" class="secao">
-            <h2>Reserve sua mesa e peça sua pizza</h2>
-            <form class="form">
-                <input type="text" id="entrada-nome" placeholder="Digite seu nome..." required>
-                <input type="email" id="entrada-email" placeholder="Digite seu e-mail..." required>
-                <input type="tel" id="entrada-telefone" placeholder="Digite seu telefone..." required>
-                
-                <!-- CORREÇÃO D12: Select para integrar o item_pedido -->
+            <h2>Reserve sua mesa</h2>
+            <form class="form" id="form-reserva">
+                <input type="text" id="entrada-nome" placeholder="Digite seu nome..." maxlength="100" required>
+                <input type="email" id="entrada-email" placeholder="Digite seu e-mail..." maxlength="100" required>
+                <input type="tel" id="entrada-telefone" placeholder="Digite seu telefone..." maxlength="20" required>
+
                 <select id="entrada-pizza" required>
-                    <option value="" disabled selected>Escolha uma Pizza para a mesa...</option>
-                    <option value="1">Margherita (R$ 42,00)</option>
-                    <option value="2">Calabresa (R$ 46,00)</option>
-                    <option value="3">Quatro Queijos (R$ 52,00)</option>
-                    <option value="4">Portuguesa (R$ 48,00)</option>
-                    <option value="5">Frango com Catupiry (R$ 50,00)</option>
-                    <option value="6">Pepperoni (R$ 54,00)</option>
+                    <option value="" disabled selected>Carregando sabores disponíveis...</option>
                 </select>
+
+                <input type="number" id="entrada-quantidade" placeholder="Quantidade de pizzas" min="1" max="20" value="1" required>
 
                 <button type="button" id="botao" class="btn">Reservar Mesa</button>
                 <div id="resultado">Resposta aparecerá aqui...</div>
-                
-                <!-- CORREÇÃO D3: Consulta de Pedido -->
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #d9bbae;">
-                    <h3 style="color: var(--vinho); margin-bottom: 10px;">Acompanhe ou Cancele</h3>
-                    
+
+                <!-- Consulta por e-mail e exclusão controlada -->
+                <div class="acoes-reserva">
+                    <h3>Acompanhe ou cancele sua reserva</h3>
+
                     <input type="email" id="entrada-consulta" placeholder="Digite seu e-mail para consultar...">
-                    <button type="button" id="botao-consultar" class="btn" style="background: #e67e22; border-color: #e67e22;">Consultar Reserva</button>
-                    
-                    <input type="number" id="entrada-cancelar" placeholder="Ou digite o número do pedido para cancelar..." style="margin-top:10px;">
-                    <button type="button" id="botao-cancelar" class="btn" style="background: #7a1a12;">Cancelar Reserva</button>
-                    
-                    <div id="resultado-acao" style="margin-top: 10px; font-family: Arial, sans-serif;"></div>
+                    <button type="button" id="botao-consultar" class="btn btn-secundario">Consultar Reserva</button>
+
+                    <input type="number" id="entrada-cancelar" placeholder="Ou digite o número do pedido (Ex: 1) para cancelar..." min="1">
+                    <button type="button" id="botao-cancelar" class="btn btn-perigo">Cancelar Reserva</button>
+
+                    <div id="resultado-acao"></div>
                 </div>
             </form>
+
+            <!-- Listagem automática carregada do PostgreSQL (comprova persistência ao recarregar) -->
+            <div class="painel-reservas">
+                <h3>Reservas registradas no sistema</h3>
+                <div id="resumo-status" class="resumo-status">Carregando resumo...</div>
+                <div id="lista-reservas" class="lista-reservas">Carregando reservas...</div>
+            </div>
         </section>
 
         <!-- ASSISTENTE (CHATBOT) -->
         <section id="assistente" class="secao">
             <h2>Fale com nossa Assistente Luiza</h2>
-            <p class="dica">Digite "ajuda" para ver o que o assistente sabe responder.</p>
+            <p class="dica">Pergunte sobre sabores, preços, horários, formas de pagamento ou reservas.</p>
             <form class="form">
                 <input type="text" id="input" placeholder="Digite sua mensagem...">
                 <button type="button" id="enviar" class="btn">Enviar</button>
                 <div id="msg-usuario">Sua mensagem aparecerá aqui...</div>
-                <div id="chat-box">Olá! Sou o assistente da Forno & Massa..</div>
+                <div id="chat-box">Olá! Sou a Luiza, atendente virtual da Forno & Massa. Como posso ajudar?</div>
             </form>
         </section>
 
@@ -111,7 +113,14 @@
     </main>
 
     <footer class="rodape">
-        <p>© 2026 Forno & Massa <strong></strong></p>
+        <div>
+            <h4>Forno & Massa</h4>
+            <p>© 2026 Forno & Massa · Pizzaria Artesanal</p>
+        </div>
+        <div>
+            <h4>Atendimento</h4>
+            <p>Rua da esquina, 123 · Todos os dias, 18h às 23h</p>
+        </div>
     </footer>
 
 </body>

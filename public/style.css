@@ -33,6 +33,9 @@ img { max-width: 100%; display: block; }
     z-index: 10;
 }
 #logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 1.5rem;
     line-height: 1.2;
     cursor: pointer;
@@ -245,6 +248,82 @@ nav a:hover { color: #fff; background: rgba(255,255,255,.1); border-left-color: 
 .chat-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #ecd5c8; }
 .chat-form input { flex: 1; margin: 0; }
 .chat-form .btn { margin: 0; }
+
+/* ===== AÇÕES E LISTA DE RESERVAS ===== */
+.acoes-reserva {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid #d9bbae;
+}
+.acoes-reserva h3,
+.painel-reservas h3 {
+    color: var(--vinho);
+    margin-bottom: 12px;
+}
+.btn-secundario {
+    background: #c86419;
+    border-color: #c86419;
+}
+.btn-secundario:hover {
+    background: transparent;
+    color: #c86419;
+}
+.btn-perigo {
+    background: var(--vinho);
+    border-color: var(--vinho);
+}
+.btn-perigo:hover {
+    background: transparent;
+    color: var(--vinho);
+}
+#resultado-acao {
+    margin-top: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+.painel-reservas {
+    margin-top: 32px;
+    max-width: 720px;
+}
+.resumo-status {
+    font-family: Arial, sans-serif;
+    font-size: .95rem;
+    color: #5c3a2e;
+    margin-bottom: 12px;
+}
+.lista-reservas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.reserva-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fff;
+    border-left: 5px solid var(--vermelho);
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 3px 10px rgba(122, 26, 18, .08);
+}
+.reserva-botoes {
+    display: flex;
+    gap: 8px;
+}
+.btn-mini {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: none;
+    color: #fff;
+    font-size: .85rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-confirmar { background: #1e7e34; }
+.btn-excluir { background: var(--vinho); }
 
 /* ===== ACESSIBILIDADE ===== */
 a:focus-visible,
