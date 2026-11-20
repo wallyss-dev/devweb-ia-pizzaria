@@ -1,4 +1,3 @@
-
 # Forno & Massa - Pizzaria Artesanal
 
 Projeto Final Interdisciplinar (AV3) desenvolvido para as disciplinas de **Desenvolvimento Web para IA** e **Banco de Dados**, do Curso Superior de Tecnologia em Inteligência Artificial (2º Período) da Faculdade Estadual Piauí - Instituto de Tecnologia (PIT).
@@ -7,7 +6,7 @@ Projeto Final Interdisciplinar (AV3) desenvolvido para as disciplinas de **Desen
 
 ## Descrição Geral do Projeto
 
-O Forno & Massa é uma plataforma web completa voltada para a apresentação e comercialização de pizzas artesanais de longa fermentação. O sistema foi projetado para oferecer uma experiência visual agradável e intuitiva, permitindo que os clientes conheçam a história da pizzaria, consultem o cardápio dinâmico integrado ao banco de dados, realizem reservas de mesa com persistência real e tirem dúvidas em tempo real por meio de uma assistente virtual inteligente integrada à API do Google Gemini.
+O Forno & Massa é uma plataforma web completa voltada para a apresentação e comercialização de pizzas artesanais de longa fermentação. O sistema permite consultar o cardápio dinâmico carregado do banco de dados, realizar, consultar, confirmar e cancelar reservas de mesa com persistência real em PostgreSQL e tirar dúvidas em tempo real com uma assistente virtual integrada à API do Google Gemini.
 
 ### Público-Alvo
 Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que buscam praticidade para consultar opções do cardápio, verificar horários de atendimento, reservar mesas para consumo presencial ou iniciar pedidos via delivery.
@@ -16,55 +15,38 @@ Amantes da gastronomia artesanal, famílias, casais e grupos de amigos que busca
 
 ## Integrantes do Grupo
 
-* **Wallysson Uriel Silva Torres** - GitHub: [@wallyss-dev](https://github.com/wallyss-dev)
-* **Arthur dos Santos Alcântara** - GitHub: [@arthuralcantarax-netizen](https://github.com/arthuralcantarax-netizen)
-* **João Gabriel Oliveira** - GitHub: [@JoaoGabriel-o](https://github.com/JoaoGabriel-o)
+- **Wallysson Uriel Silva Torres** - GitHub: [@wallyss-dev](https://github.com/wallyss-dev)
+- **Arthur dos Santos Alcântara** - GitHub: [@arthuralcantarax-netizen](https://github.com/arthuralcantarax-netizen)
+- **João Gabriel Oliveira** - GitHub: [@JoaoGabriel-o](https://github.com/JoaoGabriel-o)
 
 ---
 
 ## Tecnologias Utilizadas
 
-**Front-end:**
-* **HTML5:** Estruturação semântica das seções, cabeçalho, navegação, formulários e rodapé.
-* **CSS3:** Estilização temática com variáveis CSS (`:root`), layout responsivo (`@media queries`) e construção de cards utilizando `display: grid` e `display: flex`.
-* **JavaScript (Vanilla ES6+):** Manipulação do DOM, eventos interativos e consumo de API assíncrono com `fetch` (`async/await`).
-
-**Back-end e Banco de Dados:**
-* **Node.js & Express:** Criação do servidor web local para servir arquivos estáticos e gerenciar as rotas da API REST.
-* **PostgreSQL & Neon.tech:** Banco de dados relacional hospedado na nuvem, acessado via driver `pg` com queries parametrizadas (proteção contra SQL Injection).
-
-**Inteligência Artificial e Segurança:**
-* **Google GenAI SDK (`@google/genai`):** Integração oficial com o modelo generativo Google Gemini (`gemini-1.5-flash`).
-* **Dotenv (`dotenv`):** Gerenciamento seguro de variáveis de ambiente para proteção de chaves e strings de conexão (`GEMINI_API_KEY` e `DATABASE_URL`).
+- **Front-end:** HTML5, CSS3 (variáveis `:root`, CSS Grid, Flexbox, `@media queries`) e JavaScript Vanilla ES6+ (`fetch`, `async/await`).
+- **Back-end:** Node.js (v22+) e Express (`express`), com variáveis de ambiente gerenciadas via `dotenv`.
+- **Banco de Dados:** PostgreSQL hospedado no Neon.tech, integrado via driver oficial `pg` com queries parametrizadas e transações (`pool.connect`, `BEGIN`/`COMMIT`/`ROLLBACK`).
+- **Inteligência Artificial:** Google GenAI SDK (`@google/genai`) com modelo `gemini-3.5-flash-lite` (fallback automático para `gemini-3.1-flash-lite` em caso de indisponibilidade temporária).
 
 ---
 
 ## Principais Funcionalidades
 
-1. **Recepção Personalizada:** Captura o nome do visitante ao acessar a página e atualiza dinamicamente a saudação no banner principal (Hero).
-2. **Navegação Funcional e Responsiva:** Menu lateral fixo em telas grandes (Desktop) que se adapta automaticamente para o topo em dispositivos móveis (Mobile).
-3. **Cardápio Dinâmico em Cards (Read):** Exibição dos sabores de pizzas lidos diretamente da tabela `produto` do banco de dados, renderizando apenas os itens com `disponibilidade = true`.
-4. **Reserva de Mesa com Persistência (Create):** Formulário interativo que cadastra o cliente (respeitando unicidade de e-mail) e salva o pedido no banco PostgreSQL, retornando a confirmação com o ID gerado.
-5. **Cancelamento Inteligente / Exclusão Controlada (Delete):** Permite ao cliente cancelar a reserva. O sistema exclui o pedido e os itens associados de forma segura, mas preserva o histórico cadastral da tabela `cliente` para manter a integridade relacional.
-6. **Atendente Virtual com IA:** Chatbot funcional integrado ao Gemini que responde às dúvidas mantendo o contexto e o histórico da conversa.
+1. **Recepção Personalizada:** Captura o nome do visitante e personaliza a saudação no banner inicial.
+2. **Navegação Responsiva:** Menu lateral fixo no desktop que se adapta ao topo em celulares, com 6 seções navegáveis.
+3. **Cardápio Dinâmico (`GET /api/produtos`):** Exibe as pizzas com `disponibilidade = true` lidas diretamente do PostgreSQL e sincroniza o seletor do formulário.
+4. **Reserva Completa em Transação (`POST /api/reservas`):** Valida os dados no servidor, cadastra ou reutiliza o cliente (respeitando `UNIQUE` no e-mail), cria o pedido e vincula pizza e quantidade na tabela associativa `item_pedido`.
+5. **Consulta de Reservas e Resumo (`GET /api/reservas`, `GET /api/reservas/:email`, `GET /api/reservas/resumo`):** Carrega automaticamente os pedidos persistidos (JOIN nas 4 tabelas) e o total por status (`GROUP BY`).
+6. **Atualização e Exclusão Controlada (`PATCH /api/reservas/:id/status` e `DELETE /api/reservas/:id`):** Permite confirmar status ou cancelar o pedido removendo primeiro `item_pedido` e depois `pedido`, preservando o cadastro em `cliente`.
+7. **Assistente Virtual Luiza (`POST /api/chat`):** Chatbot com persona própria, memória de sessão e proteção contra fuga de contexto.
 
 ---
 
-## Integração com Inteligência Artificial e Persona
+## Integração com Inteligência Artificial
 
-O projeto conta com uma integração real de IA generativa por meio do SDK `@google/genai`, utilizando arquitetura cliente-servidor para proteger a chave de API no back-end (`server.js`).
-
-### Perfil da Persona
-* **Nome da Assistente:** Luiza
-* **Função:** Atendente virtual da Pizzaria Forno & Massa.
-* **Tom de Voz:** Simpática, acolhedora, direta, simples e profissional, evitando jargões e mantendo respostas curtas e objetivas (até 4 frases).
-
-### Como Funciona o Controle de Contexto
-As diretrizes da assistente estão centralizadas no arquivo `persona.js` (divididas em PERSONA, CONHECIMENTO e REGRAS) e são injetadas no modelo através da propriedade `systemInstruction`.
-
-* **Domínio de Conhecimento:** A Luiza conhece exclusivamente o endereço, o horário de funcionamento, os 6 sabores e preços exatos do cardápio e as formas de pagamento.
-* **Prevenção de Fuga de Contexto e Regras Avançadas:** A IA foi instruída a nunca inventar promoções, a lidar com mudanças de pedido, a questionar contradições lógicas e a direcionar o cliente para o formulário do site ou para o WhatsApp dependendo da intenção (reserva vs. delivery).
-* **Memória de Curto Prazo:** O servidor utiliza um identificador de sessão (`sessionId`) armazenado em memória (`Map`) para manter o histórico do diálogo enquanto o usuário navega na página.
+- **Persona:** Luiza, atendente virtual da Forno & Massa, tom simpático, acolhedor e objetivo (até 4 frases).
+- **Contexto:** Definido em `persona.js` (`PERSONA`, `CONHECIMENTO`, `REGRAS`) e injetado via `systemInstruction` no servidor (`server.js`), sem nunca expor `GEMINI_API_KEY` ao navegador.
+- **Mecanismos Anti-Fuga:** Regras explícitas proibindo invenção de preços/promoções, bloqueando assuntos fora da pizzaria e ignorando tentativas de alteração de instruções (*prompt injection*), além de histórico por `sessionId` em `Map`.
 
 ---
 
@@ -72,36 +54,51 @@ As diretrizes da assistente estão centralizadas no arquivo `persona.js` (dividi
 
 ```text
 devweb-ia-pizzaria/
-├── public/                 # Arquivos do Front-end (acessíveis pelo navegador)
-│   ├── index.html          # Estrutura principal da página e seções
-│   ├── style.css           # Estilização, paleta de cores, cards e responsividade
-│   ├── script.js           # Eventos de DOM, fetch da IA e das rotas do banco
-│   └── Pizza.webp          # Imagem de fundo da seção inicial
-├── database/               # Scripts SQL documentando o Banco de Dados
-│   ├── 01_criacao.sql      # DDL: Criação das 4 tabelas e restrições
-│   ├── 02_carga.sql        # DML: Inserção de dados de demonstração fictícios
-│   ├── 03_consultas.sql    # DQL: Consultas com JOIN e funções de Agregação
-│   └── 04_indice.sql       # Otimização de performance com CREATE INDEX
-├── .env.exemplo            # Arquivo de referência para variáveis de ambiente
-├── .gitignore              # Lista de arquivos ignorados pelo Git (node_modules, .env)
-├── package.json            # Configurações do projeto Node.js e dependências
-├── persona.js              # Definição da identidade e regras da IA
-├── server.js               # Servidor Express, Rotas SQL e integração Gemini
-└── README.md               # Documentação técnica do projeto
+├── database/                                  # Artefatos do Banco de Dados
+│   ├── schema.sql                             # Script único e reexecutável (DDL + índices + carga fictícia)
+│   ├── consultas_e_explain.sql                # Consultas JOIN/GROUP BY e testes EXPLAIN antes/depois
+│   └── der_forno_massa.png                    # Diagrama Entidade-Relacionamento (DER)
+├── Docs/
+│   └── Evidências/                            # Capturas de tela e registros de validação do sistema
+│       ├── Consultas obrigatórias/            # Prints das consultas JOIN e GROUP BY no Neon
+│       ├── DB e WEB/                          # Prints de conexão e compatibilidade do front-end
+│       ├── DER/                               # Cópia da imagem do DER para o relatório
+│       ├── índices/                           # Prints dos planos EXPLAIN antes e depois do índice
+│       ├── Provar Persistência Real, Atualização (PATCH) e Exclusão Controlada (DELETE)/
+│       ├── Teste segurança do Git e commits dos 3 integrantes/
+│       ├── Testes de validação e segurança/   # Prints e log dos testes HTTP (400/404)
+│       └── Vídeo testando chatbot/            # Gravação da Assistente Luiza em funcionamento
+├── public/                                    # Front-end servido pelo Express
+│   ├── index.html                             # Estrutura semântica e seções
+│   ├── style.css                              # Identidade visual, Grid/Flex e responsividade
+│   ├── script.js                              # Interações DOM e consumo das rotas da API
+│   ├── logo.svg                               # Logomarca da pizzaria
+│   └── Pizza.webp                             # Imagem de fundo da seção Hero
+├── .env.example                               # Modelo de variáveis de ambiente (sem segredos)
+├── .gitignore                                 # Ignora node_modules/, .env e pedidos.json
+├── package.json                               # Dependências, script "start" e requisito Node >= 22
+├── persona.js                                 # Persona, base de conhecimento e regras da IA
+├── server.js                                  # Servidor Express, rotas PostgreSQL e Gemini
+└── README.MD                                  # Documentação do projeto
+```
 
+- **DER:** `database/der_forno_massa.png`
+- **Script SQL (esquema + dados de demonstração fictícios):** `database/schema.sql`
+- **Consultas e EXPLAIN:** `database/consultas_e_explain.sql`
+- **Deploy:** Execução local.
+
+---
 
 ## Instruções de Instalação e Execução
 
-Para executar este projeto localmente, siga o passo a passo abaixo:
-
 ### Pré-requisitos
-- Ter o [Node.js](https://nodejs.org/) instalado (versão 20 LTS ou superior).
-- Possuir uma conexão com um banco PostgreSQL (Recomendado usar a nuvem Neon.tech)
-- Possuir uma chave de API gratuita do Google Gemini, gerada no [Google AI Studio](https://aistudio.google.com/).
+- [Node.js](https://nodejs.org/) v22 LTS ou superior (exigido pelo `@google/genai`).
+- Banco PostgreSQL (recomendado [Neon.tech](https://neon.tech/)).
+- Chave de API gratuita do [Google AI Studio](https://aistudio.google.com/).
 
 ### Passo 1: Clonar o repositório
 ```bash
-git clone [https://github.com/wallyss-dev/devweb-ia-pizzaria.git](https://github.com/wallyss-dev/devweb-ia-pizzaria.git)
+git clone https://github.com/wallyss-dev/devweb-ia-pizzaria.git
 cd devweb-ia-pizzaria
 ```
 
@@ -110,21 +107,15 @@ cd devweb-ia-pizzaria
 npm install
 ```
 
-### Passo 3: Configurar a Chave de API
-Crie um arquivo chamado `.env` na raiz do projeto (fora da pasta `public`) e adicione sua chave:
+### Passo 3: Configurar as variáveis de ambiente
+Copie `.env.example` para `.env` na raiz do projeto e preencha suas credenciais reais:
 ```env
-GEMINI_API_KEY=COLE_SUA_CHAVE_DO_GOOGLE_AQUI
-DATABASE_URL=COLE_SUA_STRING_DE_CONEXAO_DO_POSTGRESQL_AQUI
+GEMINI_API_KEY=COLE_SUA_CHAVE_DO_GOOGLE_AI_STUDIO_AQUI
+DATABASE_URL=COLE_SUA_STRING_DE_CONEXAO_DO_NEON_AQUI
 ```
 
-### Passo 4: Inicializar o Banco de Dados (Opcional se já estiver configurado na nuvem)
-- Execute os scripts disponíveis na pasta /banco na sua interface SQL preferida (pgAdmin, DBeaver, ou console do Neon.tech) seguindo a ordem numérica (01_criacao.sql e 02_carga.sql).
-
-```bash
-npm start
-```
-Abra o navegador e acesse: **http://localhost:3000**
-
+### Passo 4: Criar o esquema e carregar os dados fictícios
+Execute o arquivo `database/schema.sql` no SQL Editor do Neon.tech (ou `psql`/DBeaver). O script é reexecutável e recria as 4 tabelas, os índices e os dados fictícios de demonstração.
 
 ### Passo 5: Iniciar o servidor e acessar
 ```bash
