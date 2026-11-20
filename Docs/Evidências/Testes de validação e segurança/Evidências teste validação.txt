@@ -1,0 +1,52 @@
+Sobre os testes:
+
+1. Testar validações HTTP (400 e 404):
+
+H "Content-Type: application/json" -d "{\"nome\":\"\"}"
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 42
+ETag: W/"2a-5HqE97Qx6jvxtUh/UbiIRdViRIE"
+Date: Thu, 19 Nov 2026 15:10:30 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+ a decimal number between 0 and 65535
+
+PS C:\devweb-ia-pizzaria> curl.exe -i -X POST http://localhost:3000/api/reservas
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 69
+ETag: W/"45-dZYkvG5LeqR+Svr6+oCq+QzLDh4"
+Date: Thu, 19 Nov 2026 15:11:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+PS C:\devweb-ia-pizzaria> curl.exe -i -X DELETE http://localhost:3000/api/reservas/99999
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 41
+ETag: W/"29-zsMucTS7vlL5lH9Sy5I0ni4Gg1Y"
+Date: Thu, 19 Nov 2026 15:11:36 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"Pedido #99999 não encontrado."}
+
+PS C:\devweb-ia-pizzaria> curl.exe -i -X PATCH http://localhost:3000/api/reservas/1/status -H "Content-Type: application/json" -d "{\"status\":\"Invalido\"}"
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 42
+ETag: W/"2a-5HqE97Qx6jvxtUh/UbiIRdViRIE"
+Date: Thu, 19 Nov 2026 15:12:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"erro":"JSON inválido na requisição."}curl: (3) URL rejected: Port number was not a decimal number between 0 and 65535
+
+
+
+2. Testar segurança do Git e commits dos 3 integrantes:
