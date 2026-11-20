@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forno & Massa - Pizzaria Artesanal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logo.svg">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="topo">
+        <h1 id="logo"><img src="logo.svg" alt="Logo Forno & Massa" width="60" height="60"> Forno & Massa</h1>
+        <nav>
+            <a href="#inicio">Início</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#cardapio">Cardápio</a>
+            <a href="#reserva">Reserva</a>
+            <a href="#assistente">Assistente</a>
+            <a href="#contato">Contato</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- INÍCIO -->
+        <section id="inicio" class="hero">
+            <h2>Pizza de verdade</h2>
+            <p>Massa de longa fermentação, forno a lenha e ingredientes frescos direto para a sua mesa.</p>
+            <a href="#cardapio" class="btn">Ver cardápio</a>
+        </section>
+
+        <!-- SOBRE -->
+        <section id="sobre" class="secao">
+            <h2>Sobre nós</h2>
+            <div class="grade">
+                <div class="info">
+                    <h3>Nossa história</h3>
+                    <p>Nascemos em 2020 do sonho de servir pizza artesanal com carinho.</p>
+                </div>
+                <div class="info">
+                    <h3>Nossos ingredientes</h3>
+                    <p>Vêm direto de pequenos produtores e a massa é preparada todos os dias.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARDÁPIO -->
+        <section id="cardapio" class="secao">
+            <h2>Nosso cardápio</h2>
+            <div class="grade" id="grade-produtos">
+                <p>Carregando cardápio do forno...</p>
+            </div>
+        </section>
+
+        <!-- RESERVA (Cadastro + Consulta + Atualização + Exclusão Controlada) -->
+        <section id="reserva" class="secao">
+            <h2>Reserve sua mesa</h2>
+            <form class="form" id="form-reserva">
+                <input type="text" id="entrada-nome" placeholder="Digite seu nome..." maxlength="100" required>
+                <input type="email" id="entrada-email" placeholder="Digite seu e-mail..." maxlength="100" required>
+                <input type="tel" id="entrada-telefone" placeholder="Digite seu telefone..." maxlength="20" required>
+
+                <select id="entrada-pizza" required>
+                    <option value="" disabled selected>Carregando sabores disponíveis...</option>
+                </select>
+
+                <input type="number" id="entrada-quantidade" placeholder="Quantidade de pizzas" min="1" max="20" value="1" required>
+
+                <button type="button" id="botao" class="btn">Reservar Mesa</button>
+                <div id="resultado">Resposta aparecerá aqui...</div>
+
+                <!-- Consulta por e-mail e exclusão controlada -->
+                <div class="acoes-reserva">
+                    <h3>Acompanhe ou cancele sua reserva</h3>
+
+                    <input type="email" id="entrada-consulta" placeholder="Digite seu e-mail para consultar...">
+                    <button type="button" id="botao-consultar" class="btn btn-secundario">Consultar Reserva</button>
+
+                    <input type="number" id="entrada-cancelar" placeholder="Ou digite o número do pedido (Ex: 1) para cancelar..." min="1">
+                    <button type="button" id="botao-cancelar" class="btn btn-perigo">Cancelar Reserva</button>
+
+                    <div id="resultado-acao"></div>
+                </div>
+            </form>
+
+            <!-- Listagem automática carregada do PostgreSQL (comprova persistência ao recarregar) -->
+            <div class="painel-reservas">
+                <h3>Reservas registradas no sistema</h3>
+                <div id="resumo-status" class="resumo-status">Carregando resumo...</div>
+                <div id="lista-reservas" class="lista-reservas">Carregando reservas...</div>
+            </div>
+        </section>
+
+        <!-- ASSISTENTE (CHATBOT) -->
+        <section id="assistente" class="secao">
+            <h2>Fale com nossa Assistente Luiza</h2>
+            <p class="dica">Pergunte sobre sabores, preços, horários, formas de pagamento ou reservas.</p>
+            <form class="form">
+                <input type="text" id="input" placeholder="Digite sua mensagem...">
+                <button type="button" id="enviar" class="btn">Enviar</button>
+                <div id="msg-usuario">Sua mensagem aparecerá aqui...</div>
+                <div id="chat-box">Olá! Sou a Luiza, atendente virtual da Forno & Massa. Como posso ajudar?</div>
+            </form>
+        </section>
+
+        <!-- CONTATO -->
+        <section id="contato" class="secao">
+            <h2>Contato</h2>
+            <p>Rua da esquina, 123 · Aberto todos os dias, das 18h às 23h</p>
+            <a id="whats" href="https://wa.me/5586999999999" class="btn">Falar no WhatsApp</a>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <div>
+            <h4>Forno & Massa</h4>
+            <p>© 2026 Forno & Massa · Pizzaria Artesanal</p>
+        </div>
+        <div>
+            <h4>Atendimento</h4>
+            <p>Rua da esquina, 123 · Todos os dias, 18h às 23h</p>
+        </div>
+    </footer>
+
+</body>
+</html>
